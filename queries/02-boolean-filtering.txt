@@ -1,0 +1,97 @@
+# 02 - Boolean Queries and Filtering
+# Index: amazon-products-lab-v1
+
+# 1. Must + Filter
+# Find products whose title matches "Leather"
+# and whose average rating is >= 4
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": "Leather"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "average_rating": {
+              "gte": 4
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# 2. Must Not
+# Exclude products whose average rating is < 4
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": "Leather"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "range": {
+            "average_rating": {
+              "lt": 4
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# 3. Should
+# Require "Leather"; give a relevance boost to titles matching "Conditioner"
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "title": "Leather"
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "title": "Conditioner"
+          }
+        }
+      ]
+    }
+  }
+}
+
+# 4. Range
+# Find products rated from 4 through 5, inclusive
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "range": {
+      "average_rating": {
+        "gte": 4,
+        "lte": 5
+      }
+    }
+  }
+}
