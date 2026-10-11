@@ -1,0 +1,111 @@
+
+# 10 - Autocomplete with search_as_you_type
+# Elasticsearch index: amazon-products-autocomplete-lab
+# Source index: amazon-products-lab-v1
+
+# 1. Create a separate test index. The original index is not modified.
+PUT amazon-products-autocomplete-lab
+{
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "search_as_you_type",
+        "max_shingle_size": 3
+      },
+      "parent_asin": {
+        "type": "keyword"
+      },
+      "average_rating": {
+        "type": "float"
+      },
+      "store": {
+        "type": "keyword"
+      }
+    }
+  }
+}
+
+# 2. Copy documents from the source index into the test index.
+# Note: source.size controls the batch size, NOT the total number of documents.
+# In this lab, the operation copied 100,686 documents.
+POST _reindex
+{
+  "source": {
+    "index": "amazon-products-lab-v1",
+    "size": 1000
+  },
+  "dest": {
+    "index": "amazon-products-autocomplete-lab"
+  }
+}
+
+# 3. Count documents in the autocomplete index.
+GET amazon-products-autocomplete-lab/_count
+
+# 4. Search-as-you-type for a partial single word.
+GET amazon-products-autocomplete-lab/_search
+{
+  "size": 10,
+  "query": {
+    "multi_match": {
+      "query": "condi",
+      "type": "bool_prefix",
+      "fields": [
+        "title",
+        "title._2gram",
+        "title._3gram"
+      ]
+    }
+  }
+}
+
+# 5. Search-as-you-type for multiple words, with the final word incomplete.
+GET amazon-products-autocomplete-lab/_search
+{
+  "size": 10,
+  "query": {
+    "multi_match": {
+      "query": "organic condi",
+      "type": "bool_prefix",
+      "fields": [
+        "title",
+        "title._2gram",
+        "title._3gram"
+      ]
+    }
+  }
+}
+
+# 6. Compare with a longer final word.
+GET amazon-products-autocomplete-lab/_search
+{
+  "size": 5,
+  "query": {
+    "multi_match": {
+      "query": "organic condition",
+      "type": "bool_prefix",
+      "fields": [
+        "title",
+        "title._2gram",
+        "title._3gram"
+      ]
+    }
+  }
+}
+
+# 7. Search-as-you-type for a single complete word.
+GET amazon-products-autocomplete-lab/_search
+{
+  "size": 5,
+  "query": {
+    "multi_match": {
+      "query": "organic",
+      "type": "bool_prefix",
+      "fields": [
+        "title",
+        "title._2gram",
+        "title._3gram"
+      ]
+    }
+  }
+}
