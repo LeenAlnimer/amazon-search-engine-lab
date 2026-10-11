@@ -1,0 +1,15 @@
+# 08 - Relevance and Scoring
+# Index: amazon-products-lab-v1
+
+# Inspect why Elasticsearch assigns relevance scores to matching products.
+# The _explanation field breaks down the score calculation for each returned hit.
+GET amazon-products-lab-v1/_search
+{
+  "size": 3,
+  "query": {
+    "match": {
+      "title": "Leather Conditioner"
+    }
+  },
+  "explain": true
+}
