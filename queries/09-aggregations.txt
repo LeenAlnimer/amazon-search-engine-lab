@@ -1,0 +1,48 @@
+# 09 - Aggregations
+# Index: amazon-products-lab-v1
+
+# 1. Calculate statistics for product ratings
+GET amazon-products-lab-v1/_search
+{
+  "size": 0,
+  "aggs": {
+    "rating_statistics": {
+      "stats": {
+        "field": "average_rating"
+      }
+    }
+  }
+}
+
+# 2. Find the top 10 stores by product count
+GET amazon-products-lab-v1/_search
+{
+  "size": 0,
+  "aggs": {
+    "top_stores": {
+      "terms": {
+        "field": "store",
+        "size": 10
+      }
+    }
+  }
+}
+
+# 3. Group products into rating ranges
+GET amazon-products-lab-v1/_search
+{
+  "size": 0,
+  "aggs": {
+    "rating_ranges": {
+      "range": {
+        "field": "average_rating",
+        "ranges": [
+          { "to": 3 },
+          { "from": 3, "to": 4 },
+          { "from": 4, "to": 5 },
+          { "from": 5 }
+        ]
+      }
+    }
+  }
+}
