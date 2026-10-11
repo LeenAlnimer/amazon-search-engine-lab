@@ -1,0 +1,12 @@
+# 04 - Full-Text Search and Analysis
+# Index: amazon-products-lab-v1
+
+# 1. Analyze text using the analyzer configured for the title field
+POST amazon-products-lab-v1/_analyze
+{
+  "field": "title",
+  "text": "Blackfire High-uv Leather Conditioner 16 Oz."
+}
+
+# 2. Inspect the index mapping
+GET amazon-products-lab-v1/_mapping
