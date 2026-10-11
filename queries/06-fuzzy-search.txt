@@ -1,0 +1,27 @@
+# 06 - Fuzzy Search
+# Index: amazon-products-lab-v1
+
+# 1. Fuzzy search for a misspelled word
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "match": {
+      "title": {
+        "query": "conditoner",
+        "fuzziness": "AUTO"
+      }
+    }
+  }
+}
+
+# 2. Standard match without fuzziness
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "match": {
+      "title": "conditoner"
+    }
+  }
+}
