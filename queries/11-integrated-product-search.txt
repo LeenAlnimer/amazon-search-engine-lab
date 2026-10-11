@@ -1,0 +1,115 @@
+
+# 11 - Integrated Product Search
+# Index: amazon-products-lab-v1
+# Purpose: Combine Elasticsearch search features in practical product-search scenarios.
+
+# 1. Fuzzy multi-field search with a rating filter.
+# Search for a misspelled term, prioritize title matches, and require rating >= 4.
+GET amazon-products-lab-v1/_search
+{
+  "size": 10,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "conditoner",
+            "fields": [
+              "title^3",
+              "description"
+            ],
+            "fuzziness": "AUTO"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "average_rating": {
+              "gte": 4
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# 2. Sort matching products by rating, then by relevance score.
+# This gives rating priority over text relevance.
+GET amazon-products-lab-v1/_search
+{
+  "size": 10,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "conditoner",
+            "fields": [
+              "title^3",
+              "description"
+            ],
+            "fuzziness": "AUTO"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "average_rating": {
+              "gte": 4
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sort": [
+    {
+      "average_rating": "desc"
+    },
+    {
+      "_score": "desc"
+    }
+  ]
+}
+
+# 3. Calculate rating statistics for the matching products.
+# Statistics apply only to documents matching the query and filter.
+GET amazon-products-lab-v1/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "multi_match": {
+            "query": "conditoner",
+            "fields": [
+              "title^3",
+              "description"
+            ],
+            "fuzziness": "AUTO"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "average_rating": {
+              "gte": 4
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "rating_statistics": {
+      "stats": {
+        "field": "average_rating"
+      }
+    }
+  }
+}
