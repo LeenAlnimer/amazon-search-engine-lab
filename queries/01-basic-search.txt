@@ -1,0 +1,47 @@
+# 01 - Basic Search
+# Index: amazon-products-lab-v1
+
+# 1. Match: search analyzed text
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "match": {
+      "title": "Leather Conditioner"
+    }
+  }
+}
+
+# 2. Term on text field: exact indexed term
+# Tested: returned zero hits for the full phrase
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "term": {
+      "title": "Leather Conditioner"
+    }
+  }
+}
+
+# 3. Term on keyword subfield: exact title value
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "term": {
+      "title.keyword": "Howard LC0008 Leather Conditioner, 8-Ounce (4-Pack)"
+    }
+  }
+}
+
+# 4. Match phrase: words in the same order and next to each other
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "match_phrase": {
+      "title": "Leather Conditioner"
+    }
+  }
+}
