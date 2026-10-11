@@ -1,0 +1,25 @@
+# 07 - Partial Search
+# Index: amazon-products-lab-v1
+
+# 1. Prefix search on the analyzed text field
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "prefix": {
+      "title": "condit"
+    }
+  }
+}
+
+# 2. Prefix search on the keyword subfield
+# Matches indexed title values beginning with "Howard"
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "prefix": {
+      "title.keyword": "Howard"
+    }
+  }
+}
