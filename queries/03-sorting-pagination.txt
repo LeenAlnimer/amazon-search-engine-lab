@@ -1,0 +1,57 @@
+# 03 - Sorting and Pagination
+# Index: amazon-products-lab-v1
+
+# 1. Sort products by average rating (highest first)
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "match": {
+      "title": "Leather"
+    }
+  },
+  "sort": [
+    {
+      "average_rating": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+# 2. Return 10 results instead of 5
+GET amazon-products-lab-v1/_search
+{
+  "size": 10,
+  "query": {
+    "match": {
+      "title": "Leather"
+    }
+  },
+  "sort": [
+    {
+      "average_rating": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+# 3. Pagination: skip the first 10 results and return the next 10
+GET amazon-products-lab-v1/_search
+{
+  "from": 10,
+  "size": 10,
+  "query": {
+    "match": {
+      "title": "Leather"
+    }
+  },
+  "sort": [
+    {
+      "average_rating": {
+        "order": "desc"
+      }
+    }
+  ]
+}
