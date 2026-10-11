@@ -1,0 +1,32 @@
+# 05 - Multi-Field Search
+# Index: amazon-products-lab-v1
+
+# 1. Search across title and description
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "multi_match": {
+      "query": "Leather Conditioner",
+      "fields": [
+        "title",
+        "description"
+      ]
+    }
+  }
+}
+
+# 2. Boost title relevance over description
+GET amazon-products-lab-v1/_search
+{
+  "size": 5,
+  "query": {
+    "multi_match": {
+      "query": "Leather Conditioner",
+      "fields": [
+        "title^3",
+        "description"
+      ]
+    }
+  }
+}
